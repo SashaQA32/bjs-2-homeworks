@@ -1,12 +1,52 @@
+"use strict"
+
 function cachingDecoratorNew(func) {
-  // Ваш код
+    let cache = [];
+
+    function wrapper(...args) {
+        const hash = args.join(',')
+        let objectInCache = cache.findIndex((item) => item.hash === hash)
+        if (objectInCache !== -1) {
+            console.log("Из кэша: " + cache[objectInCache].value);
+            return "Из кэша: " + cache[objectInCache].value;
+        }
+        let result = func(...args);
+        cache.push({
+            hash: args.join(','),
+            value: result
+        })
+        if (cache.length > 5) {
+            cache.splice(0, 1);
+        }
+        console.log("Вычисляем: " + result);
+        return "Вычисляем: " + result;
+    }
+    return wrapper;
 }
 
-
-function debounceDecoratorNew(func) {
-  // Ваш код
+function debounceDecoratorNew(func, ms) {
+    let checkFunc = false;
+    return function(...args) {
+        if (checkFunc == false) {
+            func(...args);
+            checkFunc = true;
+            setTimeout(() => (checkFunc = false, func(...args)), ms);
+        }
+    }
 }
 
 function debounceDecorator2(func) {
-  // Ваш код
+    let checkFunc = false;
+
+    function wrapper(...args) {
+        if (checkFunc == false) {
+            let i = 0;
+            func(...args);
+            checkFunc = true;
+            wrapper.count.push(i += 1)
+            setTimeout(() => (checkFunc = false, func(...args)), ms);
+        }
+    }
+    wrapper.count = [];
+    return wrapper
 }
