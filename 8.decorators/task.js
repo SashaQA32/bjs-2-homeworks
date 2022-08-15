@@ -30,7 +30,9 @@ function debounceDecoratorNew(func, ms) {
         if (checkFunc == false) {
             func(...args);
             checkFunc = true;
-            setTimeout(() => (checkFunc = false, func(...args)), ms);
+            setTimeout(() => {
+                checkFunc = false, func(...args)
+            }, ms);
         }
     }
 }
@@ -39,14 +41,16 @@ function debounceDecorator2(func) {
     let checkFunc = false;
 
     function wrapper(...args) {
+        wrapper.count++;
         if (checkFunc == false) {
-            let i = 0;
             func(...args);
             checkFunc = true;
             wrapper.count.push(i += 1)
-            setTimeout(() => (checkFunc = false, func(...args)), ms);
+            setTimeout(() => {
+                checkFunc = false, func(...args)
+            }, ms);
         }
     }
-    wrapper.count = [];
+    wrapper.count = 0;
     return wrapper
 }
